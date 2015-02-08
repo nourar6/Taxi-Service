@@ -17,4 +17,8 @@ public class Places_Visited {
         return places_by_year.get(year);
 
     }
+
+    //TODO: add analysing method here
+
 }
+

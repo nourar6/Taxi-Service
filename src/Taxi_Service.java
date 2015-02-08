@@ -54,7 +54,17 @@ public class Taxi_Service {
 
         System.out.println(places.get_places_visited(2014));
 
+        reader = new BufferedReader(new FileReader(System.getProperty("user.home").concat("\\Desktop\\Taxi-Service\\src\\destinations_2015.json")));
 
+        JSONObject obj = new JSONObject(reader);
+
+        JSONArray arr = obj.getJSONObject("Z3O 149");
+
+        for (int i = 0; i < arr.length(); i++)
+        {
+            System.out.println(arr.get(i));
+
+        }
 
     }
 
