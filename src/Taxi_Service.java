@@ -1,3 +1,4 @@
+import Taxi_Packages.Driver_Visits;
 import Taxi_Packages.Places_Visited;
 import Taxi_Packages.Taxis;
 
@@ -7,11 +8,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.lang.reflect.Array;
+import java.util.*;
 
-import org.json.*;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class Taxi_Service {
 
@@ -22,7 +25,7 @@ public class Taxi_Service {
 
         TreeMap Taxis_Map = new TreeMap();
         Places_Visited places =  new Places_Visited();
-
+        Driver_Visits driver_visits = new Driver_Visits();
         // CSV READER Setting
         // gs
         String DELIMITER = ",";
@@ -52,19 +55,87 @@ public class Taxi_Service {
         //once list is finished add the list with the year to our places_visited class
         places.set_places_visited(places_visited, year);
 
-        System.out.println(places.get_places_visited(2014));
 
-        reader = new BufferedReader(new FileReader(System.getProperty("user.home").concat("\\Desktop\\Taxi-Service\\src\\destinations_2015.json")));
+        reader = new BufferedReader(new FileReader(System.getProperty("user.home").concat("\\Desktop\\Taxi-Service\\src\\places_and_distances.csv")));
+        line = null;
+        //CSV Loop
+        HashMap<String, Float> distances = new HashMap<String, Float>();
 
-        JSONObject obj = new JSONObject(reader);
+        while ((line = reader.readLine()) != null) {
 
-        JSONArray arr = obj.getJSONObject("Z3O 149");
-
-        for (int i = 0; i < arr.length(); i++)
-        {
-            System.out.println(arr.get(i));
+            String[] split = line.split(DELIMITER);
+            distances.put(split[1], Float.parseFloat(split[2]));
 
         }
+
+
+        //Create FileReader object which points to json file
+        FileReader fileReader = new FileReader(System.getProperty("user.home").concat("\\Desktop\\Taxi-Service\\src\\destinations_2015.json"));
+        //Create JSONParser to use on the input of file
+        JSONParser parser = new org.json.simple.parser.JSONParser();
+
+        // try for parsing the file in case the file is not the correct format.
+        try {
+            //do the parsing
+            JSONObject jsonObject = (JSONObject) parser.parse(fileReader);
+            //get the keys from the root of the json file.
+            Set<String> json_keys = jsonObject.keySet();
+            //transform Set of keys to an iterator to loop through them.
+            Iterator<String> json_iter = json_keys.iterator();
+
+            //Reset the places_visited Array
+            places_visited = new ArrayList<String>();
+
+            //Loop over the Keys
+            while (json_iter.hasNext())
+            {
+                //fetch the key from iterator
+                String key = json_iter.next();
+                //fetch the jsonObject using the key
+                Object arr = jsonObject.get(key);
+
+                //Cast Array to the expected type
+                ArrayList<ArrayList<String>> visited = (ArrayList<ArrayList<String>>) arr;
+
+                //Create new ArrayList for Drivers visited
+                ArrayList<String> driver_visited = new ArrayList<String>();
+
+                //loop over the list of visited places
+                for(int i= 0; i < visited.size(); i++)
+                {
+                    //get the first element(string) for each array(i).
+                    String place = visited.get(i).get(0);
+                    //add place to places_visited
+                    places_visited.add(place);
+                    //add place to driver_visited
+                    driver_visited.add(place);
+
+                }
+                //Driver_Visited Class Takes a HashMap for storing the Driver to visited_places
+                HashMap<String, ArrayList<String>> map_driver_visited = new HashMap<String, ArrayList<String>>();
+                //put the reg and places into map
+                map_driver_visited.put(key, driver_visited);
+                //set the map to the driver_visits class
+                driver_visits.setPlaces_visited(map_driver_visited);
+
+
+            }
+            //set places visited for 2015
+            places.set_places_visited(places_visited, 2015);
+        }
+        // catch for the possible parsing excpetion
+        catch (ParseException ex) {
+            //print the stacktrace for the exception
+            System.out.println("OOOPS");
+            ex.printStackTrace();
+        }
+
+
+
+
+        System.out.println(places.get_places_visited(2014));
+        System.out.println(places.get_places_visited(2015));
+        System.out.println(driver_visits.getPlaces_visited("M5Y 626"));
 
     }
 
