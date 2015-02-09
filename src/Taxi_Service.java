@@ -1,4 +1,5 @@
 import Taxi_Packages.Driver_Visits;
+import Taxi_Packages.Journey;
 import Taxi_Packages.Places_Visited;
 import Taxi_Packages.Taxis;
 
@@ -26,6 +27,7 @@ public class Taxi_Service {
         TreeMap Taxis_Map = new TreeMap();
         Places_Visited places =  new Places_Visited();
         Driver_Visits driver_visits = new Driver_Visits();
+        Set<Journey> journey_set = new TreeSet<Journey>();
         // CSV READER Setting
         // gs
         String DELIMITER = ",";
@@ -59,12 +61,12 @@ public class Taxi_Service {
         reader = new BufferedReader(new FileReader(System.getProperty("user.home").concat("\\Desktop\\Taxi-Service\\src\\places_and_distances.csv")));
         line = null;
         //CSV Loop
-        HashMap<String, Float> distances = new HashMap<String, Float>();
+        HashMap<String, Double> distances = new HashMap<String, Double>();
 
         while ((line = reader.readLine()) != null) {
 
             String[] split = line.split(DELIMITER);
-            distances.put(split[1], Float.parseFloat(split[2]));
+            distances.put(split[0], Double.parseDouble(split[1]));
 
         }
 
@@ -100,15 +102,22 @@ public class Taxi_Service {
                 //Create new ArrayList for Drivers visited
                 ArrayList<String> driver_visited = new ArrayList<String>();
 
+
                 //loop over the list of visited places
                 for(int i= 0; i < visited.size(); i++)
                 {
+                    Journey journey = new Journey();
+
                     //get the first element(string) for each array(i).
                     String place = visited.get(i).get(0);
+                    int no_pass = Integer.parseInt(visited.get(i).get(1));
                     //add place to places_visited
                     places_visited.add(place);
                     //add place to driver_visited
                     driver_visited.add(place);
+
+                    journey.setJourney(place, distances.get(place), key, no_pass);
+                    journey_set.add(journey);
 
                 }
                 //Driver_Visited Class Takes a HashMap for storing the Driver to visited_places
@@ -130,9 +139,12 @@ public class Taxi_Service {
             ex.printStackTrace();
         }
 
+        Iterator<Journey> journey_iter = (Iterator<Journey>) journey_set;
 
+        while(journey_iter.hasNext()) {
 
-
+            System.out.println(journey_iter.next().getJourney());
+        }
         System.out.println(places.get_places_visited(2014));
         System.out.println(places.get_places_visited(2015));
         System.out.println(driver_visits.getPlaces_visited("M5Y 626"));
