@@ -4,15 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Driver_Visits {
-    String reg;
-    HashMap<String, ArrayList<String>> places_visited;
+    HashMap<String, ArrayList<String>> places_visited_map = new HashMap<String, ArrayList<String>>();
 
-    public void setPlaces_visited(HashMap<String, ArrayList<String>> places_visited) {
-        this.places_visited = places_visited;
+    public void setPlaces_visited(String key, ArrayList<String> places_visited) {
+        places_visited_map.put(key, places_visited);
     }
 
     public ArrayList<String> getPlaces_visited(String key) {
 
-        return places_visited.get(key);
+        return places_visited_map.get(key);
     }
 }

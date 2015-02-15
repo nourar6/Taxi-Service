@@ -28,6 +28,7 @@ public class Taxi_Service {
         Places_Visited places =  new Places_Visited(); // TODO: change places to a SET type
         Driver_Visits driver_visits = new Driver_Visits();
         ArrayList<Object> journey_list = new ArrayList<Object>();
+        ArrayList<Object> driver_visits_list = new ArrayList<Object>();
         // CSV READER Setting
         // gs
         String DELIMITER = ",";
@@ -128,12 +129,11 @@ public class Taxi_Service {
                         System.out.println(ex);
                     }
                 }
-                //Driver_Visited Class Takes a HashMap for storing the Driver to visited_places
-                HashMap<String, ArrayList<String>> map_driver_visited = new HashMap<String, ArrayList<String>>();
                 //put the reg and places into map
-                map_driver_visited.put(key, driver_visited);
+                System.out.println(key);
+                System.out.println(driver_visited);
                 //set the map to the driver_visits class
-                driver_visits.setPlaces_visited(map_driver_visited);
+                driver_visits.setPlaces_visited(key, driver_visited);
 
             }
             //set places visited for 2015
@@ -152,11 +152,15 @@ public class Taxi_Service {
 //        }
         //System.out.println(places.get_places_visited(2014));
         //System.out.println(places.get_places_visited(2015));
-        //System.out.println(driver_visits.getPlaces_visited("M5Y 626"));
+
 
         report_fares(journey_list, false);
 
         report_fares(journey_list, true);
+
+
+        driver_visited(driver_visits, Taxis_Map);
+
     }
 
     public static void  report_fares(ArrayList list_journeys, Boolean expensive) {
@@ -205,6 +209,29 @@ public class Taxi_Service {
             System.out.println();
 
         }
+
+    }
+
+    public static void driver_visited(Driver_Visits driver_visit, TreeMap Taxis_Map){
+
+        Iterator regs = Taxis_Map.keySet().iterator();
+
+        while(regs.hasNext()){
+            String driver = regs.next().toString();
+            Taxis taxi = (Taxis) Taxis_Map.get(driver);
+            String driver_name = taxi.getDriver();
+            System.out.println(driver);
+            ArrayList<String> places = driver_visit.getPlaces_visited(driver);
+
+            System.out.printf("%s\n", driver_name);
+            Collections.sort(places);
+
+            for (int i = 0; i < places.size(); i++) {
+                System.out.printf("\t%s\n", places.get(i));
+            }
+
+        }
+
 
     }
 }
