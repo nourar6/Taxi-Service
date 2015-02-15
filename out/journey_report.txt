@@ -1,0 +1,14 @@
+CHARGES FOR THE TOP 5 JOURNEYS
+Z3O 149   Bristol    502.0 miles  3 people   Cost £502.29
+Z3O 149   Stoke-on-Trent    302.7 miles  1 people   Cost £302.79
+Z3O 149   Plymouth    282.6 miles  3 people   Cost £282.90
+E2Z 442   Liverpool    280.5 miles  4 people   Cost £280.88
+Z3O 149   Bradford    272.1 miles  2 people   Cost £272.26
+
+CHARGES FOR THE CHEAPEST 5 JOURNEYS
+M5Y 626   Aberdeen    30.9 miles  2 people   Cost £31.05
+M5Y 626   Portsmouth    44.8 miles  5 people   Cost £45.34
+M5Y 626   Nottingham    49.1 miles  3 people   Cost £49.42
+E2Z 442   Edinburgh    72.1 miles  2 people   Cost £72.32
+M5Y 626   Wolverhampton    90.7 miles  1 people   Cost £90.82
+

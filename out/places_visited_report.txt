@@ -1,0 +1,46 @@
+14 New Places Visited in 2015
+	Nottingham
+	Dudley
+	Bradford
+	Derby
+	Aberdeen
+	Plymouth
+	Newcastle upon Tyne
+	Leicester
+	Stoke-on-Trent
+	Reading
+	Southampton
+	Bristol
+	Kingston upon Hull
+	Portsmouth
+25 New Places Visited in 2014
+	Preston
+	York
+	Sunderland
+	Huddersfield
+	Ipswich
+	West Bromwich
+	Belfast
+	Blackpool
+	Southend-on-Sea
+	Gloucester
+	Oxford
+	Stockport
+	Norwich
+	Coventry
+	Dundee
+	Birmingham
+	Luton
+	Bournemouth
+	Poole
+	Sheffield
+	Caerdydd
+	Bolton
+	Walsall
+	Swansea
+	Northampton
+4 Places Visited in BOTH  2014 and 2015
+	Wolverhampton
+	Edinburgh
+	Liverpool
+	Manchester

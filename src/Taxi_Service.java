@@ -4,10 +4,7 @@ import Taxi_Packages.Places_Visited;
 import Taxi_Packages.Taxis;
 
 import javax.swing.table.TableCellEditor;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
@@ -155,19 +152,18 @@ public class Taxi_Service {
         }
         // TODO http://stackoverflow.com/questions/6621516/when-do-i-write-my-own-exception-class
 
-//        report_fares(journey_list, false);
-//
-//        report_fares(journey_list, true);
-//
-//        driver_visited_report(driver_visits, Taxis_Map);
-//        int[] years = {2014, 2015};
-//
-//        places_visited_report(places, years);
+        report_fares(journey_list);
+
+
+        driver_visited_report(driver_visits, Taxis_Map);
+        int[] years = {2014, 2015};
+
+        places_visited_report(places, years);
 
 
     }
 
-    public static void  report_fares(ArrayList list_journeys, Boolean expensive) {
+    public static void  report_fares(ArrayList list_journeys) throws FileNotFoundException,UnsupportedEncodingException {
         // create a new list to be sorted later on
         List<Journey> ordered_list = new ArrayList<Journey>();
         // add all the journeys from our normal list to our one to be sorted
@@ -178,48 +174,54 @@ public class Taxi_Service {
         // sort our new list using Javas built in Collections Module.
         Collections.sort(ordered_list);
 
-        //depending on sorting in ascending or descending do the following
-        if (expensive) {
-            // print the header
-            System.out.println("CHARGES FOR THE TOP 5 JOURNEYS");
-            // loop through the ordered list in reverse to get the top 5
-            for (int i = ordered_list.size()-1; i > (ordered_list.size()-6); i--) {
-                // retreive the journey from the ordered list
-                ArrayList journey_vals = ordered_list.get(i).getJourney();
-                // print the information in a nice format
-                System.out.printf("%s   %s    %.1f miles  %d people   Cost £%.2f\n",
-                        (String) journey_vals.get(2),
-                        (String) journey_vals.get(0),
-                        (Double) journey_vals.get(1),
-                        (Integer) journey_vals.get(3),
-                        (Double) journey_vals.get(4));
-            }
-            // print new line for padding
-            System.out.println();
+        PrintWriter writer = new PrintWriter(System.getProperty("user.home").concat("\\Desktop\\Taxi-Service\\out\\journey_report.txt"), "UTF-8");
+            //depending on sorting in ascending or descending do the following
 
+
+        // print the header
+        writer.println("CHARGES FOR THE TOP 5 JOURNEYS");
+        // loop through the ordered list in reverse to get the top 5
+        for (int i = ordered_list.size() - 1; i > (ordered_list.size() - 6); i--) {
+            // retreive the journey from the ordered list
+            ArrayList journey_vals = ordered_list.get(i).getJourney();
+            // print the information in a nice format
+            writer.printf("%s   %s    %.1f miles  %d people   Cost £%.2f\n",
+                    (String) journey_vals.get(2),
+                    (String) journey_vals.get(0),
+                    (Double) journey_vals.get(1),
+                    (Integer) journey_vals.get(3),
+                    (Double) journey_vals.get(4));
         }
-        else {
-            // Same as above but not in reverse
-            System.out.println("CHARGES FOR THE CHEAPEST 5 JOURNEYS");
+        // print new line for padding
+        writer.println();
 
-            for (int i = 0; i < 5; i++) {
 
-                //System.out.println(ordered_list.get(i).getJourney());
-                ArrayList journey_vals = ordered_list.get(i).getJourney();
-                System.out.printf("%s   %s    %.1f miles  %d people   Cost £%.2f\n",
-                        (String) journey_vals.get(2),
-                        (String) journey_vals.get(0),
-                        (Double) journey_vals.get(1),
-                        (Integer) journey_vals.get(3),
-                        (Double) journey_vals.get(4));
-            }
-            System.out.println();
 
+        // Same as above but not in reverse
+        writer.println("CHARGES FOR THE CHEAPEST 5 JOURNEYS");
+
+        for (int i = 0; i < 5; i++) {
+
+            //System.out.println(ordered_list.get(i).getJourney());
+            ArrayList journey_vals = ordered_list.get(i).getJourney();
+            writer.printf("%s   %s    %.1f miles  %d people   Cost £%.2f\n",
+                    (String) journey_vals.get(2),
+                    (String) journey_vals.get(0),
+                    (Double) journey_vals.get(1),
+                    (Integer) journey_vals.get(3),
+                    (Double) journey_vals.get(4));
         }
+        writer.println();
+
+
+        writer.close();
 
     }
 
-    public static void driver_visited_report(Driver_Visits driver_visit, TreeMap Taxis_Map){
+    public static void driver_visited_report(Driver_Visits driver_visit, TreeMap Taxis_Map) throws FileNotFoundException, UnsupportedEncodingException {
+
+        PrintWriter writer2 = new PrintWriter(System.getProperty("user.home").concat("\\Desktop\\Taxi-Service\\out\\driver_visited_report.txt"), "UTF-8");
+
         // Create Iterator of Registrations
         Iterator regs = Taxis_Map.keySet().iterator();
         // loop over iterator
@@ -233,20 +235,24 @@ public class Taxi_Service {
             //set the places visited to an ArrayList
             ArrayList<String> places = driver_visit.getPlaces_visited(driver);
             // print the drivers name
-            System.out.printf("%s\n", driver_name);
+            writer2.printf("%s\n", driver_name);
             // Sort the Places Names
             Collections.sort(places);
             // print the places in the a for loop
             for (int i = 0; i < places.size(); i++) {
-                System.out.printf("\t%s\n", places.get(i));
+                writer2.printf("\t%s\n", places.get(i));
             }
 
         }
+        writer2.close();
 
 
     }
 
-    public static void places_visited_report(Places_Visited place, int[] years){
+    public static void places_visited_report(Places_Visited place, int[] years) throws FileNotFoundException, UnsupportedEncodingException {
+
+        PrintWriter writer3 = new PrintWriter(System.getProperty("user.home").concat("\\Desktop\\Taxi-Service\\out\\places_visited_report.txt"), "UTF-8");
+
         // create a new List of Sets
         List<Set> list_places = new ArrayList<Set>();
         // add the sets from our places visited to this one.
@@ -280,28 +286,30 @@ public class Taxi_Service {
         //generarte iterator for year2
         Iterator year2_iter = year2_only.iterator();
         // print the Heafer
-        System.out.printf("%d New Places Visited in %d\n", new_num, years[1]);
+        writer3.printf("%d New Places Visited in %d\n", new_num, years[1]);
         // iterate and pritn the places
         while(year2_iter.hasNext()){
-            System.out.printf("\t%s\n", year2_iter.next());
+            writer3.printf("\t%s\n", year2_iter.next());
         }
 
         // Same As above should probably make this a method to stop code duplication
         new_num = year1_only.size();
         Iterator year1_iter = year1_only.iterator();
-        System.out.printf("%d New Places Visited in %d\n", new_num, years[0]);
+        writer3.printf("%d New Places Visited in %d\n", new_num, years[0]);
 
         while(year1_iter.hasNext()){
-            System.out.printf("\t%s\n", year1_iter.next());
+            writer3.printf("\t%s\n", year1_iter.next());
         }
         // Same as last comment
         new_num = both_year.size();
         Iterator both_year_iter = both_year.iterator();
-        System.out.printf("%d Places Visited in BOTH  %d and %d\n", new_num, years[0], years[1]);
+        writer3.printf("%d Places Visited in BOTH  %d and %d\n", new_num, years[0], years[1]);
 
         while(both_year_iter.hasNext()){
-            System.out.printf("\t%s\n", both_year_iter.next());
+            writer3.printf("\t%s\n", both_year_iter.next());
         }
+
+        writer3.close();
 
     }
 }
