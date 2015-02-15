@@ -1,28 +1,28 @@
 {
   "Z3O 149": [
-    ["Bristol", 3],
-    ["Leicester", 2],
-    ["Kingston upon Hull", 4],
-    ["Bradford", 2],
-    ["Stoke-on-Trent", 1],
-    ["Plymouth", 3],
-    ["Southampton", 5],
-    ["Derby", 2]
+    ["Bristol", "3"],
+    ["Leicester", "2"],
+    ["Kingston upon Hull", "4"],
+    ["Bradford", "2"],
+    ["Stoke-on-Trent", "1"],
+    ["Plymouth", "3"],
+    ["Southampton", "5"],
+    ["Derby", "2"]
   ],
   "M5Y 626": [
-    ["Wolverhampton", 1],
-    ["Nottingham", 3],
-    ["Reading", 2],
-    ["Dudley", 4],
-    ["Portsmouth", 5],
-    ["Newcastle upon Tyne", 2],
-    ["Aberdeen", 2]
+    ["Wolverhampton", "1"],
+    ["Nottingham", "3"],
+    ["Reading", "2"],
+    ["Dudley", "4"],
+    ["Portsmouth", "5"],
+    ["Newcastle upon Tyne", "2"],
+    ["Aberdeen", "2"]
   ],
   "E2Z 442": [
-    ["Southampton", 3],
-    ["Liverpool", 4],
-    ["Edinburgh", 2],
-    ["Manchester", 3]
+    ["Southampton", "3"],
+    ["Liverpool", "4"],
+    ["Edinburgh", "2"],
+    ["Manchester", "3"]
   ]
 
 }

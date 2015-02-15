@@ -19,15 +19,15 @@ import org.json.simple.parser.ParseException;
 
 public class Taxi_Service {
 
-    //Load text files and generate instances of the clases to be built
+    // Load text files and generate instances of the clases to be built
     // Read Drivers file
 
     public static void main(String[] args) throws FileNotFoundException,IOException {
 
         TreeMap Taxis_Map = new TreeMap();
-        Places_Visited places =  new Places_Visited();
+        Places_Visited places =  new Places_Visited(); // TODO: change places to a SET type
         Driver_Visits driver_visits = new Driver_Visits();
-        Set<Journey> journey_set = new TreeSet<Journey>();
+        ArrayList<Object> journey_list = new ArrayList<Object>();
         // CSV READER Setting
         // gs
         String DELIMITER = ",";
@@ -38,7 +38,7 @@ public class Taxi_Service {
         while ((line = reader.readLine()) != null) {
 
             String[] split = line.split(DELIMITER);
-            System.out.println(split[0].concat(", " + split[1]));
+            // System.out.println(split[0].concat(", " + split[1]));
             Taxis taxi =  new Taxis();
             taxi.setDriver(split[0], split[1]);
             Taxis_Map.put(taxi.getRegistration(), taxi);
@@ -48,7 +48,7 @@ public class Taxi_Service {
         // specify year for places_visited
         int year = 2014;
         // List of places_visited set as empty
-        List<String> places_visited = new ArrayList<String>();
+        Set<String> places_visited = new HashSet<String>();
         // While loop to loop over each line of places
         while ((line = reader.readLine()) != null) {
             //add the places to the list
@@ -86,7 +86,7 @@ public class Taxi_Service {
             Iterator<String> json_iter = json_keys.iterator();
 
             //Reset the places_visited Array
-            places_visited = new ArrayList<String>();
+            places_visited = new HashSet<String>();
 
             //Loop over the Keys
             while (json_iter.hasNext())
@@ -110,15 +110,23 @@ public class Taxi_Service {
 
                     //get the first element(string) for each array(i).
                     String place = visited.get(i).get(0);
+                   // System.out.println(place);
                     int no_pass = Integer.parseInt(visited.get(i).get(1));
+                    //System.out.println(no_pass);
                     //add place to places_visited
                     places_visited.add(place);
                     //add place to driver_visited
                     driver_visited.add(place);
 
-                    journey.setJourney(place, distances.get(place), key, no_pass);
-                    journey_set.add(journey);
+                    try {
+                        journey.setJourney(place, distances.get(place), key, no_pass);
 
+                        journey_list.add(journey);
+                    }
+                    catch (NullPointerException ex)
+                    {
+                        System.out.println(ex);
+                    }
                 }
                 //Driver_Visited Class Takes a HashMap for storing the Driver to visited_places
                 HashMap<String, ArrayList<String>> map_driver_visited = new HashMap<String, ArrayList<String>>();
@@ -126,7 +134,6 @@ public class Taxi_Service {
                 map_driver_visited.put(key, driver_visited);
                 //set the map to the driver_visits class
                 driver_visits.setPlaces_visited(map_driver_visited);
-
 
             }
             //set places visited for 2015
@@ -139,17 +146,65 @@ public class Taxi_Service {
             ex.printStackTrace();
         }
 
-        Iterator<Journey> journey_iter = (Iterator<Journey>) journey_set;
+//        for(int i=0; i < journey_list.size(); i++) {
+//
+//            Journey journey = (Journey) journey_list.get(i);
+//        }
+        //System.out.println(places.get_places_visited(2014));
+        //System.out.println(places.get_places_visited(2015));
+        //System.out.println(driver_visits.getPlaces_visited("M5Y 626"));
 
-        while(journey_iter.hasNext()) {
+        report_fares(journey_list, false);
 
-            System.out.println(journey_iter.next().getJourney());
-        }
-        System.out.println(places.get_places_visited(2014));
-        System.out.println(places.get_places_visited(2015));
-        System.out.println(driver_visits.getPlaces_visited("M5Y 626"));
-
+        report_fares(journey_list, true);
     }
 
+    public static void  report_fares(ArrayList list_journeys, Boolean expensive) {
 
+        List<Journey> ordered_list = new ArrayList<Journey>();
+
+        for (int i = 0; i < list_journeys.size(); i++) {
+            ordered_list.add((Journey) list_journeys.get(i));
+
+        }
+        Collections.sort(ordered_list);
+
+
+        if (expensive) {
+            System.out.println("CHARGES FOR THE TOP 5 JOURNEYS");
+
+            for (int i = ordered_list.size()-1; i > (ordered_list.size()-6); i--) {
+
+                //System.out.println(ordered_list.get(i).getJourney());
+                ArrayList journey_vals = ordered_list.get(i).getJourney();
+                System.out.printf("%s   %s    %.1f miles  %d people   Cost £%.2f\n",
+                        (String) journey_vals.get(2),
+                        (String) journey_vals.get(0),
+                        (Double) journey_vals.get(1),
+                        (Integer) journey_vals.get(3),
+                        (Double) journey_vals.get(4));
+            }
+            System.out.println();
+
+        }
+        else {
+
+            System.out.println("CHARGES FOR THE CHEAPEST 5 JOURNEYS");
+
+            for (int i = 0; i < 5; i++) {
+
+                //System.out.println(ordered_list.get(i).getJourney());
+                ArrayList journey_vals = ordered_list.get(i).getJourney();
+                System.out.printf("%s   %s    %.1f miles  %d people   Cost £%.2f\n",
+                        (String) journey_vals.get(2),
+                        (String) journey_vals.get(0),
+                        (Double) journey_vals.get(1),
+                        (Integer) journey_vals.get(3),
+                        (Double) journey_vals.get(4));
+            }
+            System.out.println();
+
+        }
+
+    }
 }
