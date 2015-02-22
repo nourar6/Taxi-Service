@@ -7,15 +7,10 @@ import Taxi_Packages.FileFormatException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.table.TableCellEditor;
 import java.io.*;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.*;
 
-
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -25,53 +20,58 @@ public class Taxi_Service {
     // Load text files and generate instances of the clases to be built
     // Read Drivers file
 
-    public static void main(String[] args) throws FileNotFoundException,IOException, FileFormatException {
+    public static void main(String[] args) throws FileNotFoundException,IOException, FileFormatException, Exception {
 
         TreeMap Taxis_Map = new TreeMap();
         Places_Visited places =  new Places_Visited();
         Driver_Visits driver_visits = new Driver_Visits();
         ArrayList<Object> journey_list = new ArrayList<Object>();
         ArrayList<Object> driver_visits_list = new ArrayList<Object>();
-        // CSV READER Setting
-        // gs
-        String DELIMITER = ",";
 
+        // CSV READER Setting
+        String DELIMITER = ",";
         BufferedReader reader = new BufferedReader(new FileReader(System.getProperty("user.home").concat("\\Desktop\\Taxi-Service\\src\\drivers.csv")));
         String line = null;
-        //CSV Loop
-        String pattern = "^[A-Z][0-9][A-Z] [0-9]{3}$";
-        // Create a Pattern object
-        Pattern r = Pattern.compile(pattern);
 
+        //CSV Loop
         int lineNum = 0;
         while ((line = reader.readLine()) != null) {
             lineNum++;
+            //Try Extract information from our Drivers text file
             try {
+                //Split the data on each "," how .csv's work
                 String[] split = line.split(DELIMITER);
-
-                // Now create matcher object.
-                Matcher m = r.matcher(split[1]);
-
-                if (!m.find( )){throw new FileFormatException("Registration did not match valid format line Number: " + Integer.toString(lineNum));}
+                //create a new Taxt instance
                 Taxis taxi = new Taxis();
+                // Set the data into the instance
                 taxi.setDriver(split[0], split[1]);
+                //Add the Instance to our Data Structure for looking up later on with Reg as the key.
                 Taxis_Map.put(taxi.getRegistration(), taxi);
             }
+            //Catch for Registration not being in the correct format (Our own exception)
+            catch (FileFormatException ff){
+              throw new FileFormatException("Registration did not match valid format on line Number: " + Integer.toString(lineNum));
+            }
+            //catch for no registration found
+            catch(IndexOutOfBoundsException in){
+                throw new FileFormatException("Registration is not set on line Number: " + Integer.toString(lineNum));
+            }
+            //catch for anything else
             catch(Exception ex){
-                break;
+                throw new Exception("Unknown Exception occurred on line Number: " + Integer.toString(lineNum));
             }
         }
 
-
+        // new Reader for our next file
         reader = new BufferedReader(new FileReader(System.getProperty("user.home").concat("\\Desktop\\Taxi-Service\\src\\destinations_2014.csv")));
         // specify year for places_visited
         int year = 2014;
         // List of places_visited set as empty
         Set<String> places_visited = new HashSet<String>();
 
-        pattern = "^[A-z -]+$";
+        String pattern = "^[A-z -]+$";
         // Create a Pattern object
-        r = Pattern.compile(pattern);
+        Pattern r = Pattern.compile(pattern);
 
         // While loop to loop over each line of places
         lineNum = 0;
@@ -85,7 +85,7 @@ public class Taxi_Service {
         //once list is finished add the list with the year to our places_visited class
         places.set_places_visited(places_visited, year);
 
-
+        // new Reader for our next file
         reader = new BufferedReader(new FileReader(System.getProperty("user.home").concat("\\Desktop\\Taxi-Service\\src\\places_and_distances.csv")));
         line = null;
         //CSV Loop
@@ -103,9 +103,14 @@ public class Taxi_Service {
             try{
                 Double.parseDouble(split[1]);
             }
+            //Catch for being unable to convert distance as a string to a double
             catch(NumberFormatException e) {
                 e.printStackTrace();
                 throw new FileFormatException("Distance did not match valid format line Number: " + Integer.toString(lineNum));
+            }
+            //catch for no registration found
+            catch(IndexOutOfBoundsException in){
+                throw new FileFormatException("Distance is not set on line Number: " + Integer.toString(lineNum));
             }
             distances.put(split[0], Double.parseDouble(split[1]));
 
@@ -190,14 +195,14 @@ public class Taxi_Service {
             throw new FileFormatException("did not match valid format");
 
         }
-        // TODO http://stackoverflow.com/questions/6621516/when-do-i-write-my-own-exception-class
-
+        // Generate the Report for Fares
         report_fares(journey_list);
 
-
+        //Generate the Report of places drivers has visited
         driver_visited_report(driver_visits, Taxis_Map);
-        int[] years = {2014, 2015};
 
+        int[] years = {2014, 2015};
+        //Generate the Report for places visited in the array of years set above
         places_visited_report(places, years);
 
 
