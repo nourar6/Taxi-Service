@@ -11,7 +11,7 @@ public class Journey implements Comparable<Journey> {
 
     // internal method to calculate the cost accessible only within this class
     private void calculateCost(Integer no_of_passengers, Double distance) {
-        cost = distance * 1 + (0.1 * no_of_passengers);
+        cost = distance * (1 + (0.1 * no_of_passengers));
     }
 
     // Contstructor to set the information required and calculate the cost.
